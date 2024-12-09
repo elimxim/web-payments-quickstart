@@ -7,8 +7,8 @@
       src="https://sandbox.web.squarecdn.com/v1/square.js"
     ></script>
     <script>
-      const appId = '{APPLICATION_ID}';
-      const locationId = '{LOCATION_ID}';
+      const appId = 'sandbox-sq0idb-xF1WmUADphBJOgTVBWiXaQ';
+      const locationId = 'LHTV9WX8M26FB';
 
       async function initializeCard(payments) {
         const card = await payments.card();
@@ -21,7 +21,7 @@
         const body = JSON.stringify({
           locationId,
           sourceId: token,
-          verificationToken,
+          // verificationToken,
           idempotencyKey: window.crypto.randomUUID(),
         });
 
@@ -42,7 +42,36 @@
       }
 
       async function tokenize(paymentMethod) {
-        const tokenResult = await paymentMethod.tokenize();
+        const billingContact = {
+            givenName: 'Bob',
+            familyName: 'Billy',
+            email: 'maksim.eliseev@lightspeedhq.com',
+            phone: '6462332186',
+            addressLines: ['20 W 84th St'],
+            city: 'New York',
+            countryCode: 'US',
+        };
+        const total = {
+            amount: '1.00',
+            currencyCode: 'USD',
+        };
+
+        window.console.log("Here we go");
+        
+        // we changed this:
+        // const tokenResult = await paymentMethod.tokenize()
+        // to this:
+        const tokenResult = await paymentMethod.tokenize(
+          {
+            billingContact: billingContact, 
+            intent: 'CHARGE', 
+            sellerKeyedIn: 'FALSE', 
+            customerInitiated: 'TRUE', 
+            total: total
+          }
+        );
+        // we also tried to pass parameters in dirrents ways
+
         if (tokenResult.status === 'OK') {
           return tokenResult.token;
         } else {
@@ -62,16 +91,15 @@
         const verificationDetails = {
           amount: '1.00',
           billingContact: {
-            givenName: 'John',
-            familyName: 'Doe',
-            email: 'john.doe@square.example',
-            phone: '3214563987',
-            addressLines: ['123 Main Street', 'Apartment 1'],
-            city: 'London',
-            state: 'LND',
-            countryCode: 'GB',
+            givenName: 'Bob',
+            familyName: 'Billy',
+            email: 'maksim.eliseev@lightspeedhq.com',
+            phone: '6462332186',
+            addressLines: ['20 W 84th St'],
+            city: 'New York',
+            countryCode: 'US',
           },
-          currencyCode: 'GBP',
+          currencyCode: 'USD',
           intent: 'CHARGE',
         };
 
@@ -130,10 +158,10 @@
             // disable the submit button as we await tokenization and make a payment request.
             cardButton.disabled = true;
             const token = await tokenize(card);
-            const verificationToken = await verifyBuyer(payments, token);
+            // const verificationToken = await verifyBuyer(payments, token);
             const paymentResults = await createPayment(
               token,
-              verificationToken,
+              null, // verificationToken
             );
             displayPaymentResults('SUCCESS');
 
