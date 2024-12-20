@@ -42,7 +42,8 @@
       }
 
       async function tokenize(paymentMethod) {
-        const billingContact = {
+        const verificationDetails = {
+          billingContact: {
             givenName: 'Bob',
             familyName: 'Billy',
             email: 'maksim.eliseev@lightspeedhq.com',
@@ -50,27 +51,21 @@
             addressLines: ['20 W 84th St'],
             city: 'New York',
             countryCode: 'US',
-        };
-        const total = {
-            amount: '1.00',
+          },
+          customerInitiated: true,
+          sellerKeyedIn: false,
+          intent: 'CHARGE',
+          total: {
+            amount: 100,
             currencyCode: 'USD',
+          }
         };
 
         window.console.log("Here we go");
         
-        // we changed this:
-        // const tokenResult = await paymentMethod.tokenize()
-        // to this:
-        const tokenResult = await paymentMethod.tokenize(
-          {
-            billingContact: billingContact, 
-            intent: 'CHARGE', 
-            sellerKeyedIn: 'FALSE', 
-            customerInitiated: 'TRUE', 
-            total: total
-          }
-        );
-        // we also tried to pass parameters in dirrents ways
+        const tokenResult = await paymentMethod.tokenize(verificationDetails);
+
+        console.log(`Tokenization result: ${JSON.stringify(tokenResult)}`)
 
         if (tokenResult.status === 'OK') {
           return tokenResult.token;
