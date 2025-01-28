@@ -43,6 +43,7 @@
 
       async function tokenize(paymentMethod) {
         const verificationDetails = {
+          amount: '1.00',
           billingContact: {
             givenName: 'Bob',
             familyName: 'Billy',
@@ -52,16 +53,13 @@
             city: 'New York',
             countryCode: 'US',
           },
-          customerInitiated: true,
-          sellerKeyedIn: false,
+          currencyCode: 'USD',
           intent: 'CHARGE',
-          total: {
-            amount: 100,
-            currencyCode: 'USD',
-          }
+          customerInitiated: true,
+          sellerKeyedIn: false
         };
 
-        window.console.log("Here we go");
+        console.log("Here we go");
         
         const tokenResult = await paymentMethod.tokenize(verificationDetails);
 
@@ -153,6 +151,7 @@
             // disable the submit button as we await tokenization and make a payment request.
             cardButton.disabled = true;
             const token = await tokenize(card);
+
             // const verificationToken = await verifyBuyer(payments, token);
             const paymentResults = await createPayment(
               token,
